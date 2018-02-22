@@ -2,7 +2,11 @@ package appart.madridshops
 
 import android.support.multidex.MultiDexApplication
 import android.util.Log
+import com.joseluissanchezporrogodoy.domain.interactor.ErrorCompletion
+import com.joseluissanchezporrogodoy.domain.interactor.SuccessCompletion
+import com.joseluissanchezporrogodoy.domain.interactor.getallactivities.GetAllActivitiesInteractorImpl
 import com.joseluissanchezporrogodoy.domain.interactor.getallshops.GetAllShopsInteractorImpl
+import com.joseluissanchezporrogodoy.domain.model.EntitiesModel
 
 
 /**
@@ -15,11 +19,6 @@ class MadridShopsApp : MultiDexApplication() {
         // init code application wide
 
         Log.d("App", "onCreate")
-
-
-        val allShopsInteractor = GetAllShopsInteractorImpl(this)
-
-
 
 
 

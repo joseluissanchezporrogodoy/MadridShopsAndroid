@@ -28,7 +28,7 @@ data class EntityModel
     }
 }
 
-class EntitiesModel(val entities: MutableList<EntityModel>): Aggregate<EntityModel> {
+class EntitiesModel(val entities: MutableList<EntityModel>): Aggregate<EntityModel>, Serializable {
     override fun count(): Int = entities.size
 
     override fun all(): List<EntityModel> = entities
