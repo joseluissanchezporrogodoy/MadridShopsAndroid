@@ -1,10 +1,13 @@
 package appart.madridshops.activity
 
 import android.animation.ValueAnimator
+import android.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import appart.madridshops.R
 import appart.madridshops.router.Router
@@ -12,6 +15,7 @@ import com.joseluissanchezporrogodoy.domain.interactor.ErrorCompletion
 import com.joseluissanchezporrogodoy.domain.interactor.SuccessCompletion
 import com.joseluissanchezporrogodoy.domain.interactor.getallactivities.GetAllActivitiesInteractorImpl
 import com.joseluissanchezporrogodoy.domain.interactor.getallshops.GetAllShopsInteractorImpl
+import com.joseluissanchezporrogodoy.domain.interactor.internetstatus.InternetStatusInteractorImpl
 import com.joseluissanchezporrogodoy.domain.model.EntitiesModel
 import kotlinx.android.synthetic.main.activity_main_menu.*
 
@@ -23,8 +27,7 @@ class MainMenuActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_menu)
-        getShops()
-        getActivities()
+        checkInternetStatus()
         shops_button.visibility = View.GONE
         activity_button.visibility = View.GONE
         shops_button.setOnClickListener{
@@ -34,6 +37,28 @@ class MainMenuActivity : AppCompatActivity() {
             goToActivitiesView()
         }
 
+    }
+    private fun checkInternetStatus() {
+
+
+        InternetStatusInteractorImpl().execute(this, success = {
+
+            getShops()
+            getActivities()
+
+        }, error = {
+            AlertDialog.Builder(this)
+                    .setTitle("Error")
+                    .setMessage(it)
+                    .setPositiveButton("Retry?", { dialog, which ->
+                        dialog.dismiss()
+                        checkInternetStatus()
+                    })
+                    .setNegativeButton("Exit", { dialog, which ->
+                        finish()
+                    })
+                    .show()
+        })
     }
 
     private fun goToActivitiesView() {
@@ -107,6 +132,19 @@ class MainMenuActivity : AppCompatActivity() {
         // 4
         animator.duration = 500L
         animator.start()
+    }
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        super.onCreateOptionsMenu(menu)
+        getMenuInflater()?.inflate(R.menu.settings, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item?.itemId == R.id.reintent) {
+            checkInternetStatus()
+        }
+
+        return true
     }
 
 }

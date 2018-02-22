@@ -13,6 +13,8 @@ import android.view.MenuItem
 import android.widget.Toast
 import appart.madridshops.R
 import appart.madridshops.adapters.InfoWindowArrayAdapter
+import appart.madridshops.adapters.RecyclerViewAdapter
+import appart.madridshops.fragments.ListFragment
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
@@ -22,7 +24,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.joseluissanchezporrogodoy.domain.model.EntitiesModel
 import com.joseluissanchezporrogodoy.domain.model.EntityModel
 
-class MapListActivity : AppCompatActivity() {
+class MapListActivity : AppCompatActivity(), RecyclerViewAdapter.OnEntitySelectedListener {
 
     companion object {
         val ENTITIES_LIST = "ENTITIES_LIST"
@@ -35,38 +37,22 @@ class MapListActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_map_list)
         items = intent.getSerializableExtra(ENTITIES_LIST) as EntitiesModel
-        setupMap()
+        setupMapAndList()
     }
 
 
-    private fun setupMap() {
+    private fun setupMapAndList() {
         initializeMap(items)
-
-//
-//        val allShopsInteractor = GetAllShopsInteractorImpl(this)
-//
-//        allShopsInteractor.execute(object: SuccessCompletion<Shops> {
-//            override fun successCompletion(shops: Shops) {
-//                initializeMap(shops)
-//                addList(shops)
-//
-//
-//            }
-//        }, object: ErrorCompletion {
-//            override fun errorCompletion(errorMessage: String) {
-//                Toast.makeText(baseContext,"Error", Toast.LENGTH_LONG).show()
-//            }
-//        })
-
+        addList(items)
     }
 
-//    private fun addList(entity: EntityModel) {
-//        val fragment = ListFragment.newInstance()
-//        fragment.list = entity
-//        fragmentManager.beginTransaction()
-//                .replace(R.id.activity_main_list_fragment,fragment)
-//                .commit()
-//    }
+    private fun addList(entity: EntitiesModel) {
+        val fragment = ListFragment.newInstance()
+        fragment.list = entity
+        fragmentManager.beginTransaction()
+                .replace(R.id.activity_main_list_fragment,fragment)
+                .commit()
+    }
 
     private fun initializeMap(entities: EntitiesModel) {
         val mapFragment = supportFragmentManager.findFragmentById(R.id.activity_main_map_fragment) as SupportMapFragment
@@ -141,10 +127,10 @@ class MapListActivity : AppCompatActivity() {
     }
 
 
-//    /// Listener for selected entity in list
-//    override fun onEntitySelected(entity: EntityModel, position: Int) {
-//        Log.d("Seleccionado", entity.name)
-//
-//        //startActivity(DetailActivity.intent(this,entity))
-//    }
+    /// Listener for selected entity in list
+    override fun onEntitySelected(entity: EntityModel, position: Int) {
+        Log.d("Seleccionado", entity.name)
+
+        startActivity(DetailActivity.intent(this,entity))
+    }
 }

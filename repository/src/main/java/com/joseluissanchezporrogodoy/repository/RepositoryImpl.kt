@@ -31,11 +31,11 @@ class RepositoryImpl(context: Context): Repository {
                 }, error = {
             // if no shops in cache --> network
 
-            populateCache(success, error)
+            populateCacheShops(success, error)
         })
     }
 
-    private fun populateCache(success: (shops: List<Entity>) -> Unit, error: (errorMessage: String) -> Unit) {
+    private fun populateCacheShops(success: (shops: List<Entity>) -> Unit, error: (errorMessage: String) -> Unit) {
         // perform network request
 
         val jsonManager: GetJsonManager = GetJsonManagerVolleyImpl(weakContext.get() !!)
@@ -51,6 +51,32 @@ class RepositoryImpl(context: Context): Repository {
                 }
                 // store result in cache
                 cache.saveAllShops(responseEntity.result, success = {
+                    success(responseEntity.result)
+                }, error = {
+                    error("Something happened on the way to heaven!")
+                })
+            }
+        }, error = object: ErrorCompletion {
+            override fun errorCompletion(errorMessage: String) {
+            }
+        })
+    }
+    private fun populateCacheActivities(success: (shops: List<Entity>) -> Unit, error: (errorMessage: String) -> Unit) {
+        // perform network request
+
+        val jsonManager: GetJsonManager = GetJsonManagerVolleyImpl(weakContext.get() !!)
+        jsonManager.execute(BuildConfig.MADRID_ACTIVITIES_SERVER_URL, success =  object: SuccessCompletion<String> {
+            override fun successCompletion(e: String) {
+                val parser = JsonEntitiesParser()
+                var responseEntity: ResponseEntity
+                try {
+                    responseEntity = parser.parse<ResponseEntity>(e)
+                } catch (e: InvalidFormatException) {
+                    error("ERROR PARSING")
+                    return
+                }
+                // store result in cache
+                cache.saveAllActivities(responseEntity.result, success = {
                     success(responseEntity.result)
                 }, error = {
                     error("Something happened on the way to heaven!")
@@ -77,7 +103,7 @@ class RepositoryImpl(context: Context): Repository {
                 }, error = {
             // if no shops in cache --> network
 
-            populateCache(success, error)
+            populateCacheActivities(success, error)
         })
     }
 
