@@ -4,5 +4,5 @@
 
     <item
         android:id="@+id/reintent"
-        android:title="Reintentar" />
+        android:title="@string/reintentar" />
 </menu>

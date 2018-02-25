@@ -37,7 +37,7 @@
             android:id="@+id/description_detail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="El pero de san roque" />
+            android:text="@string/relleno" />
 
     </ScrollView>
 </android.support.constraint.ConstraintLayout>
