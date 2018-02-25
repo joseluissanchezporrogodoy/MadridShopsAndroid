@@ -9,3 +9,4 @@
 .externalNativeBuild
 libs/
 src/main/java/appart/madridshops/fragments/
+google_maps_api_key.xml
